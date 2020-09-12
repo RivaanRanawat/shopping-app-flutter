@@ -17,23 +17,44 @@ class ProductItem extends StatelessWidget {
     final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
-          child: GridTile(
+      child: GridTile(
         child: GestureDetector(
-          onTap: () => Navigator.of(context).pushNamed(ProductDetailsScreen.routeName, arguments: product.id),
-            child: Image.network(
+          onTap: () => Navigator.of(context)
+              .pushNamed(ProductDetailsScreen.routeName, arguments: product.id),
+          child: Image.network(
             product.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          leading: IconButton(icon: Icon( product.isFav?Icons.favorite: Icons.favorite_border), onPressed: () {
-            product.toggleFavouriteStatus();
-          },color: Colors.red,),
-          title: Text(product.title, textAlign: TextAlign.center,),
-          trailing: IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {
-            cart.addItems(product.id, product.price, product.title);
-          },color: Colors.red),
+          leading: IconButton(
+            icon: Icon(product.isFav ? Icons.favorite : Icons.favorite_border),
+            onPressed: () {
+              product.toggleFavouriteStatus();
+            },
+            color: Colors.red,
+          ),
+          title: Text(
+            product.title,
+            textAlign: TextAlign.center,
+          ),
+          trailing: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {
+                cart.addItems(product.id, product.price, product.title);
+                Scaffold.of(context).hideCurrentSnackBar();
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Added Item to Cart!"),
+                    duration: Duration(seconds: 2),
+                    action: SnackBarAction(label: "UNDO", onPressed: () {
+                      cart.removeSingleItem(product.id);
+                    },),
+                  ),
+                );
+              },
+              color: Colors.red),
         ),
       ),
     );
