@@ -14,9 +14,12 @@ class UserProductsScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text("Your Products"),
           actions: [
-            IconButton(icon: Icon(Icons.add),onPressed: () {
-              Navigator.of(context).pushNamed(EditProductScreen.routeName);
-            },),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).pushNamed(EditProductScreen.routeName);
+              },
+            ),
           ],
         ),
         drawer: AppDrawer(),
@@ -24,7 +27,8 @@ class UserProductsScreen extends StatelessWidget {
           padding: EdgeInsets.all(15),
           child: ListView.builder(
               itemCount: productData.items.length,
-              itemBuilder: (_, i) => UserProductItem(productData.items[i].title, productData.items[i].imageUrl)),
+              itemBuilder: (_, i) => UserProductItem(productData.items[i].id,
+                  productData.items[i].title, productData.items[i].imageUrl)),
         ));
   }
 }
