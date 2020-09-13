@@ -25,6 +25,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   };
 
   var _isInit = true;
+  var _isLoading = false;
 
   final _form = GlobalKey<FormState>();
 
@@ -80,19 +81,31 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   void _saveForm() {
     _form.currentState.validate();
-    if(!_form.currentState.validate()) {
+    if (!_form.currentState.validate()) {
       return;
     }
     _form.currentState.save();
-    if(_editedProduct.id != null) {
+    setState(() {
+      _isLoading = true;
+    });
+    
+    if (_editedProduct.id != null) {
       // EDITING THE PRODUCT
-      Provider.of<Products>(context, listen: false).updateProduct(_editedProduct.id, _editedProduct);
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+          setState(() {
+            _isLoading = false;
+          });
+      Navigator.of(context).pop();
     } else {
       // ADDING A PRODUCT
-      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct).then((_){
+        setState(() {
+            _isLoading = false;
+          });
+        Navigator.of(context).pop();
+      });
     }
-    
-    Navigator.of(context).pop();
   }
 
   @override
@@ -107,7 +120,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           ),
         ],
       ),
-      body: Padding(
+      body: _isLoading? Center(child: CircularProgressIndicator(),) : Padding(
         padding: EdgeInsets.all(8),
         child: Form(
           key: _form,
@@ -119,7 +132,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   labelText: "Title",
                 ),
                 validator: (value) {
-                  if(value.isEmpty) {
+                  if (value.isEmpty) {
                     return "Please enter the title of the Product.";
                   }
                   return null;
@@ -135,8 +148,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       id: _editedProduct.id,
                       isFav: _editedProduct.isFav,
                       imageUrl: _editedProduct.imageUrl,
-                      price: _editedProduct.price
-                      );
+                      price: _editedProduct.price);
                 },
               ),
               TextFormField(
@@ -236,14 +248,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         return null;
                       },
                       onSaved: (value) {
-                       _editedProduct = Product(
-                      title: _editedProduct.title,
-                      description: _editedProduct.description,
-                      id: _editedProduct.id,
-                      isFav: _editedProduct.isFav,
-                      imageUrl: value,
-                      price: _editedProduct.price);
-                },
+                        _editedProduct = Product(
+                            title: _editedProduct.title,
+                            description: _editedProduct.description,
+                            id: _editedProduct.id,
+                            isFav: _editedProduct.isFav,
+                            imageUrl: value,
+                            price: _editedProduct.price);
+                      },
                     ),
                   ),
                 ],
