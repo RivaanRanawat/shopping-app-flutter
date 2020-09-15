@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:shopping_app/models/http_exceptions.dart';
+import '../models/http_exceptions.dart';
 import "dart:convert";
 import './product.dart';
 import "package:http/http.dart" as http;
@@ -25,6 +25,9 @@ class Products with ChangeNotifier {
     try {
       final res = await http.get(url);
       final extractedData = json.decode(res.body) as Map<String, dynamic>;
+      if(extractedData == null) {
+        return;
+      }
       final List<Product> loadedProducts = [];
       extractedData.forEach((productId, productData) {
         loadedProducts.insert(0, Product(
