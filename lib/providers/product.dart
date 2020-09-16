@@ -2,7 +2,7 @@ import "package:flutter/foundation.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
 
-class Product with ChangeNotifier{
+class Product with ChangeNotifier {
   final String id;
   final String title;
   final String description;
@@ -19,20 +19,22 @@ class Product with ChangeNotifier{
     this.isFav = false,
   });
 
-  Future<void> toggleFavouriteStatus(String token) async{
+  Future<void> toggleFavouriteStatus(String token, String userId) async {
     final oldStatus = isFav;
     isFav = !isFav;
     notifyListeners();
-    final url = "https://shop-flutter-app-de5c5.firebaseio.com/products/$id.json?auth=$token";
-    try{
-      final res = await http.patch(url, body: json.encode({
-        "isFav": isFav,
-      }));
-      if(res.statusCode>= 400) {
+    final url =
+        "https://shop-flutter-app-de5c5.firebaseio.com/userFavourites/$userId/$id.json?auth=$token";
+    try {
+      final res = await http.put(url,
+          body: json.encode(
+            isFav,
+          ),);
+      if (res.statusCode >= 400) {
         isFav = oldStatus;
         notifyListeners();
       }
-    }catch(err) {
+    } catch (err) {
       isFav = oldStatus;
       notifyListeners();
     }
