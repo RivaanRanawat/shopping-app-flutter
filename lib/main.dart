@@ -5,6 +5,7 @@ import './screens/edit_product_screen.dart';
 import './screens/orders_screen.dart';
 import './screens/user_products_screen.dart';
 import './providers/cart.dart';
+import "./providers/auth.dart";
 import './providers/product_provider.dart';
 import './screens/product_details_screen.dart';
 import './screens/products_overview_screen.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (ctx) => Auth(),),
       ChangeNotifierProvider(create: (ctx) => Products(),),
       ChangeNotifierProvider(create: (ctx) => Cart(),),
       ChangeNotifierProvider(create: (ctx) => Order(),),
@@ -35,7 +37,6 @@ class MyApp extends StatelessWidget {
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
           UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
           EditProductScreen.routeName: (ctx) => EditProductScreen(),
-          AuthScreen.routeName: (ctx) => AuthScreen(),
         },
       ),
     );
