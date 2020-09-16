@@ -16,13 +16,14 @@ class OrderItem {
 class Order with ChangeNotifier {
   List<OrderItem> _orders = [];
   final String authToken;
-  Order(this.authToken, this._orders);
+  final String userId;
+  Order(this.authToken, this.userId ,this._orders);
   List<OrderItem> get orders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetOrders() async {
-    final url = 'https://shop-flutter-app-de5c5.firebaseio.com/orders.json?auth=$authToken';
+    final url = 'https://shop-flutter-app-de5c5.firebaseio.com/orders/$userId.json?auth=$authToken';
     final response = await http.get(url);
     final List<OrderItem> loadedOrders = [];
     final extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -53,7 +54,7 @@ class Order with ChangeNotifier {
   }
 
     Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-    final url = "https://shop-flutter-app-de5c5.firebaseio.com/orders.json?auth=$authToken";
+    final url = "https://shop-flutter-app-de5c5.firebaseio.com/orders/$userId.json?auth=$authToken";
     final timestamp = DateTime.now();
     // so that we get one timestamp and not two diff timestamp
     final res = await http.post(url, body: json.encode({
